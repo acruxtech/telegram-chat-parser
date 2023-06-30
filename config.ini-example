@@ -1,0 +1,6 @@
+[userbot]
+api_id = 12345
+api_hash = abcdef
+
+[db]
+database = db
