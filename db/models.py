@@ -27,13 +27,12 @@ class Chat(BaseCommon):
         )
 
 
-class Chat(BaseCommon):    
-    __tablename__ = "users"
+class Keyword(BaseCommon):    
+    __tablename__ = "keywords"
 
-    telegram_id = Column(BigInteger)
-    title = Column(String)
+    text = Column(String)
 
     def __repr__(self):
         return (
-            f'Chat(telegram_id={self.telegram_id}, title={self.title})'
+            f'Keyword(text={self.text})'
         )
