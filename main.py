@@ -1,19 +1,16 @@
 import asyncio
 import logging
 
-from pathlib import Path
 from pyrogram import Client
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import NullPool
+from pyrogram.methods.utilities.idle import idle
 
-from db import create_db
 from config import load_config
-from db.models import BaseCommon
-from db.pool_creater import create_pool
+from db.pool_creater import Pool
+
+from userbot.handlers.common import register_common_handlers
 
 logger = logging.getLogger(__name__)
+config = load_config("config.ini")
 
 
 async def main():
@@ -26,20 +23,19 @@ async def main():
         ]
     )
     logger.error("Starting userbot")
-    config = load_config("config.ini")
 
-    pool: sessionmaker = await create_pool(
+    pool = Pool()
+    await pool.create_pool(
         database=config.db.database,
         echo=False,
     )
 
     app = Client("my_account", config.userbot.api_id, api_hash=config.userbot.api_hash)
+    register_common_handlers(app)
 
-    try:
-        await app.start()
-    finally:
-        await app.stop()
-
+    await app.start()
+    await idle()
+    await app.stop()
 
 if __name__ == '__main__':
     try:
