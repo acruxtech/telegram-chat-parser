@@ -40,7 +40,7 @@ class Pool(metaclass=Singleton):
         async_sessionmaker = sessionmaker(
             engine, expire_on_commit=False, class_=AsyncSession
         )
-        self.pool = async_sessionmaker
+        self.pool = async_sessionmaker()
 
 
     def get_current(self) -> sessionmaker:

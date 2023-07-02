@@ -38,6 +38,22 @@ class Repo:
             )
 
         return res.scalars().all()
+    
+
+    async def set_chats(self, chats: list[Chat]):
+        await self.delete_chats()
+        for chat in chats:
+            self.conn.add(chat)
+
+        await self.conn.commit()
+
+
+    async def set_keywords(self, keywords: list[Keyword]):
+        await self.delete_keywords()
+        for keyword in keywords:
+            self.conn.add(keyword)
+
+        await self.conn.commit()
 
     
     # async def update_obj(self, obj_id, **kwargs):
@@ -54,14 +70,14 @@ class Repo:
 
 
     async def delete_chats(self):
-        for chat in self.get_chats():
+        for chat in await self.get_chats():
             await self.conn.delete(chat)
         
         await self.conn.commit()
 
 
     async def delete_keywords(self):
-        for kw in self.get_keywords():
+        for kw in await self.get_keywords():
             await self.conn.delete(kw)
         
         await self.conn.commit()
@@ -76,3 +92,7 @@ def repo(func):
 
     return wrapper
     
+
+def create_repo():
+    db: AsyncSession = Pool().get_current()
+    return Repo(db)
